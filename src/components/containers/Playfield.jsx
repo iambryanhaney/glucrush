@@ -4,6 +4,7 @@ import { TileRow } from "./TileRow";
 // Third Party
 import { useState } from "react";
 import gen from "random-seed";
+import { nanoid } from "nanoid";
 
 // const randomWithoutSeed = gen.create();
 
@@ -33,6 +34,7 @@ export const Playfield = () => {
           row,
           col,
           color: tileColors[random(8)],
+          uuid: nanoid(),
         });
       }
       draftPlayfield.push(draftRow);
@@ -41,7 +43,7 @@ export const Playfield = () => {
   });
 
   return (
-    <div className="flex items-center justify-center bg-green-300">
+    <div className="flex items-center justify-center shadow-2xl bg-black">
       {playfield.map((tileRow) => (
         <TileRow tileRow={tileRow} />
       ))}
