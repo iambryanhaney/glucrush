@@ -1,11 +1,22 @@
 // Components - gobal
 import { Tile } from "./Tile";
 
-export const TileRow = ({ tileRow }) => {
+export const TileRow = ({
+  draggedTile,
+  dragCallbacks,
+  hoveredTile,
+  tileRow,
+}) => {
   return (
-    <div className="Tile-Row">
-      {tileRow.map((tileColumn) => (
-        <Tile tile={tileColumn} key={tileColumn.uuid} />
+    <div className="Tile-Row flex">
+      {tileRow.map((tile) => (
+        <Tile
+          tile={tile}
+          key={tile.uuid}
+          dragCallbacks={dragCallbacks}
+          draggedTile={draggedTile}
+          hoveredTile={hoveredTile}
+        />
       ))}
     </div>
   );
