@@ -29,6 +29,7 @@ export const Playfield = () => {
     const draftPlayfield = [];
     for (let row = 0; row < boardRows; row++) {
       const draftRow = [];
+      draftRow.uuid = nanoid();
       for (let col = 0; col < boardCols; col++) {
         draftRow.push({
           row,
@@ -45,7 +46,7 @@ export const Playfield = () => {
   return (
     <div className="flex items-center justify-center shadow-2xl bg-black">
       {playfield.map((tileRow) => (
-        <TileRow tileRow={tileRow} />
+        <TileRow tileRow={tileRow} key={tileRow.uuid} />
       ))}
     </div>
   );
