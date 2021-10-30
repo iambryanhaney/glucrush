@@ -1,5 +1,13 @@
+// Components - global
+import { Layout } from "./components/containers/Layout";
+import { Playfield } from "./components/containers/Playfield";
+
 function App() {
-  return <div className="h-screen w-screen bg-red-500">Test</div>;
+  return (
+    <Layout>
+      <Playfield />
+    </Layout>
+  );
 }
 
 export default App;
