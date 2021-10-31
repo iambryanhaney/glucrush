@@ -31,7 +31,8 @@ export const Playfield = () => {
       "h-20",
       "top-0",
       "pointer-events-none",
-      "opacity-0"
+      "opacity-0",
+      "z-20"
     );
     return dragElement;
   });
@@ -79,11 +80,31 @@ export const Playfield = () => {
     hoveredTile.color = originalDraggedTileColor;
   };
 
+  const checkRowCombo = (row, col, color) => {
+    // Check left...
+    for (var colLeftOffset = 1; col - colLeftOffset >= 0; colLeftOffset++) {
+      console.log("leftoff: ", colLeftOffset);
+      if (playfield[row][col - colLeftOffset].color !== color) break;
+    }
+
+    // Check right...
+    for (
+      var colRightOffset = 1;
+      col + colRightOffset < boardCols;
+      colRightOffset++
+    ) {
+      if (playfield[row][col + colRightOffset].color !== color) break;
+    }
+
+    console.log("Combo count: ", colLeftOffset + colRightOffset - 1);
+  };
+
   const onPointerUp = () => {
     dragElement.style.opacity = 0;
     dragElement.classList.remove(draggedTile.color);
 
     if (hoveredTile && draggedTile) {
+      // Swap tiles
       if (hoveredTile.row === draggedTile.row) {
         if (hoveredTile.col === draggedTile.col - 1) swapTiles(0, -1);
         else if (hoveredTile.col === draggedTile.col + 1) swapTiles(0, +1);
@@ -91,6 +112,9 @@ export const Playfield = () => {
         if (hoveredTile.row === draggedTile.row - 1) swapTiles(-1, 0);
         else if (hoveredTile.row === draggedTile.row + 1) swapTiles(+1, 0);
       }
+
+      // Check for combos
+      checkRowCombo(hoveredTile.row, hoveredTile.col, hoveredTile.color);
     }
     setDraggedTile();
     setHoveredTile();
@@ -98,7 +122,7 @@ export const Playfield = () => {
 
   return (
     <div
-      className="w-screen h-screen bg-green-100 flex flex-col justify-center items-center"
+      className="w-screen h-screen flex flex-col justify-center items-center"
       onPointerMove={(e) => {
         dragElement.style.transform = `translate(${e.clientX - 40}px, ${
           e.clientY - 40
