@@ -22,7 +22,13 @@ const getBorder = (draggedTile, tile) => {
 };
 
 export const Tile = ({
-  dragData: { draggedTile, setDraggedTile, hoveredTile, setHoveredTile },
+  dragData: {
+    draggedTile,
+    onPointerDown,
+    onPointerUp,
+    hoveredTile,
+    setHoveredTile,
+  },
   tile,
 }) => {
   const isDragging = draggedTile === tile;
@@ -32,29 +38,22 @@ export const Tile = ({
     <div
       className={cx(
         "Tile h-20 w-20",
-        isDragging
-          ? "bg-gray-300"
-          : hoveredTile === tile
-          ? "bg-red-900"
-          : tile.color,
+        isDragging ? "bg-gray-300" : tile.color,
         borderStatus ?? borderDefault,
-        hoveredTile === tile && "saturate-200 brightness-200"
+        hoveredTile === tile &&
+          "ring-blue-500 ring-8 z-10 saturate-200 brightness-200"
       )}
       onPointerEnter={() => {
         console.log("entering: ", borderStatus);
         if (!!borderStatus) {
-          console.log("wtf");
           setHoveredTile(tile);
         }
       }}
       onPointerLeave={() => {
-        console.log("leaving");
         setHoveredTile();
       }}
-      onPointerDown={() => setDraggedTile(tile)}
-      onPointerUp={() => {
-        setDraggedTile();
-      }}
+      onPointerDown={(e) => onPointerDown(e, tile)}
+      onPointerUp={onPointerUp}
     />
   );
 };

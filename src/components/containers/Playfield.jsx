@@ -30,9 +30,9 @@ export const Playfield = () => {
       "w-20",
       "h-20",
       "top-0",
-      "bg-blue-800"
+      "pointer-events-none",
+      "opacity-0"
     );
-    dragElement.style.zIndex = -1;
     return dragElement;
   });
 
@@ -61,24 +61,65 @@ export const Playfield = () => {
     return draftPlayfield;
   });
 
-  console.log("playfield: ", playfield);
   const [draggedTile, setDraggedTile] = useState();
   const [hoveredTile, setHoveredTile] = useState();
 
+  const onPointerDown = (e, tile) => {
+    setDraggedTile(tile);
+    dragElement.style.transform = `translate(${e.clientX - 40}px, ${
+      e.clientY - 40
+    }px)`;
+    dragElement.style.opacity = 0.7;
+    dragElement.classList.add(tile.color);
+  };
+
+  const swapTiles = (rowOffset, columnOffset) => {
+    const originalDraggedTileColor = draggedTile.color;
+    draggedTile.color = hoveredTile.color;
+    hoveredTile.color = originalDraggedTileColor;
+  };
+
+  const onPointerUp = () => {
+    dragElement.style.opacity = 0;
+    dragElement.classList.remove(draggedTile.color);
+
+    if (hoveredTile && draggedTile) {
+      if (hoveredTile.row === draggedTile.row) {
+        if (hoveredTile.col === draggedTile.col - 1) swapTiles(0, -1);
+        else if (hoveredTile.col === draggedTile.col + 1) swapTiles(0, +1);
+      } else if (hoveredTile.col === draggedTile.col) {
+        if (hoveredTile.row === draggedTile.row - 1) swapTiles(-1, 0);
+        else if (hoveredTile.row === draggedTile.row + 1) swapTiles(+1, 0);
+      }
+    }
+    setDraggedTile();
+    setHoveredTile();
+  };
+
   return (
-    <div className="Playfield flex flex-col items-center justify-center shadow-2xl bg-black">
-      {playfield.map((tileRow) => (
-        <TileRow
-          tileRow={tileRow}
-          key={tileRow.uuid}
-          dragData={{
-            draggedTile,
-            setDraggedTile,
-            hoveredTile,
-            setHoveredTile,
-          }}
-        />
-      ))}
+    <div
+      className="w-screen h-screen bg-green-100 flex flex-col justify-center items-center"
+      onPointerMove={(e) => {
+        dragElement.style.transform = `translate(${e.clientX - 40}px, ${
+          e.clientY - 40
+        }px)`;
+      }}
+    >
+      <div className="Playfield flex flex-col items-center justify-center shadow-2xl">
+        {playfield.map((tileRow) => (
+          <TileRow
+            tileRow={tileRow}
+            key={tileRow.uuid}
+            dragData={{
+              draggedTile,
+              onPointerDown,
+              onPointerUp,
+              hoveredTile,
+              setHoveredTile,
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };
