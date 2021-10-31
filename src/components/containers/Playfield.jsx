@@ -65,30 +65,18 @@ export const Playfield = () => {
   const [draggedTile, setDraggedTile] = useState();
   const [hoveredTile, setHoveredTile] = useState();
 
-  // const dragCallbacks = {
-  //   onTileDragStart: (e, tile) => {
-  //     e.dataTransfer.setDragImage(dragElement, 30, 30);
-  //     setDraggedTile(tile);
-  //   },
-  //   onTileDragEnd: () => {
-  //     setDraggedTile();
-  //     setHoveredTile();
-  //   },
-  //   onTileDragEnter: (e) => {
-  //     console.log("entering: ", e.currentTarget);
-  //     setHoveredTile(e.currentTarget);
-  //   },
-  // };
-
   return (
     <div className="Playfield flex flex-col items-center justify-center shadow-2xl bg-black">
       {playfield.map((tileRow) => (
         <TileRow
           tileRow={tileRow}
           key={tileRow.uuid}
-          dragCallbacks={dragCallbacks}
-          draggedTile={draggedTile}
-          hoveredTile={hoveredTile}
+          dragData={{
+            draggedTile,
+            setDraggedTile,
+            hoveredTile,
+            setHoveredTile,
+          }}
         />
       ))}
     </div>

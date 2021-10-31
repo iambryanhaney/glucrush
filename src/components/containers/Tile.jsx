@@ -1,5 +1,5 @@
 // Third Party
-import { useRef } from "react";
+import { useState } from "react";
 import cx from "classnames";
 
 const borderDefault = "border border-gray-500";
@@ -18,19 +18,15 @@ const getBorder = (draggedTile, tile) => {
       else if (tile.row === draggedTile.row + 1) return borderBottomSquare;
     }
   }
-
-  return borderDefault;
+  return undefined;
 };
 
 export const Tile = ({
-  draggedTile,
-  dragCallbacks: { onTileDragEnd, onTileDragEnter, onTileDragStart },
-  hoveredTile,
+  dragData: { draggedTile, setDraggedTile, hoveredTile, setHoveredTile },
   tile,
 }) => {
   const isDragging = draggedTile === tile;
-
-  const tileRef = useRef(null);
+  const borderStatus = getBorder(draggedTile, tile);
 
   return (
     <div
@@ -38,22 +34,27 @@ export const Tile = ({
         "Tile h-20 w-20",
         isDragging
           ? "bg-gray-300"
-          : hoveredTile === tileRef?.current
+          : hoveredTile === tile
           ? "bg-red-900"
           : tile.color,
-        getBorder(draggedTile, tile)
+        borderStatus ?? borderDefault,
+        hoveredTile === tile && "saturate-200 brightness-200"
       )}
-      ref={tileRef}
-      draggable
-      // onDragStart={(e) => {
-      //   onTileDragStart(e, tile);
-      // }}
-      // onDragEnd={onTileDragEnd}
-      // onDragEnter={onTileDragEnter}
-      // onDragLeave={(e) => console.log("leaving: ", e)}
-      onPointerEnter={() => console.log("Entered! ", tile.row, tile.col)}
-      onMouseDown={() => console.log("Starting Drag")}
-      onMouseUp={() => console.log("Ending Drag")}
+      onPointerEnter={() => {
+        console.log("entering: ", borderStatus);
+        if (!!borderStatus) {
+          console.log("wtf");
+          setHoveredTile(tile);
+        }
+      }}
+      onPointerLeave={() => {
+        console.log("leaving");
+        setHoveredTile();
+      }}
+      onPointerDown={() => setDraggedTile(tile)}
+      onPointerUp={() => {
+        setDraggedTile();
+      }}
     />
   );
 };
